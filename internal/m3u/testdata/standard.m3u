@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="bbc1.uk" tvg-name="BBC One" tvg-logo="https://example.com/bbc1.png" tvg-chno="101" group-title="UK",BBC One
+http://provider/bbc1.ts
+#EXTINF:-1 tvg-id="bbc2.uk" tvg-name="BBC Two" group-title="UK",BBC Two
+http://provider/bbc2.m3u8

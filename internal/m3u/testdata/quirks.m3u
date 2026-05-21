@@ -1,0 +1,7 @@
+﻿#EXTM3U
+#EXTINF:-1,Pirate Radio FM
+http://provider/pirate.ts
+#EXTINF:-1 tvg-name="日本テレビ" group-title="Japan",日本テレビ
+http://provider/ntv.ts
+#EXTINF:-1 tvg-id="weird=channel" group-title="A=B",Equals
+http://provider/equals.ts
