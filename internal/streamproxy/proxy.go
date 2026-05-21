@@ -53,10 +53,14 @@ const sessionCookieTTL = 8 * time.Hour
 // Settings exposes only the proxy-relevant knobs from the broader settings
 // store. Phase 7 will plug in a DB-backed snapshot; Phase 5 ships with
 // StaticSettings for tests and the main wiring.
+//
+// GuideWindowCap is consumed by the server package's /guide handler; it lives
+// here so there's one Settings surface across the whole plugin.
 type Settings interface {
 	PerUserStreamCap() int
 	PerChannelDefaultCap() int
 	SessionIdleTimeout() time.Duration
+	GuideWindowCap() time.Duration
 }
 
 // StaticSettings is a frozen Settings impl handy for tests and the
@@ -65,6 +69,9 @@ type StaticSettings struct {
 	PerUser     int
 	PerChannel  int
 	IdleTimeout time.Duration
+	// GuideWindow caps the max guide window served by /guide. When left as
+	// the zero value, GuideWindowCap() returns 24h (the Phase 6 default).
+	GuideWindow time.Duration
 }
 
 // PerUserStreamCap returns the max concurrent sessions a single user may run.
@@ -76,6 +83,15 @@ func (s StaticSettings) PerChannelDefaultCap() int { return s.PerChannel }
 // SessionIdleTimeout returns the duration after which the idle reaper ends
 // silent sessions.
 func (s StaticSettings) SessionIdleTimeout() time.Duration { return s.IdleTimeout }
+
+// GuideWindowCap returns the hard cap applied to GET /guide windows. Zero
+// values fall back to 24h so tests that don't care don't have to set it.
+func (s StaticSettings) GuideWindowCap() time.Duration {
+	if s.GuideWindow <= 0 {
+		return 24 * time.Hour
+	}
+	return s.GuideWindow
+}
 
 // Deps is the dependency bundle shared by every stream-proxy handler. It is
 // instantiated once in main and method-bound to the chi router; tests build
