@@ -21,19 +21,22 @@
       "type": "scheduled_task.v1",
       "id": "refresh_m3u_sources",
       "display_name": "Refresh M3U sources",
-      "cron": "0 */6 * * *"
+      "cron": "0 */6 * * *",
+      "description": "Re-downloads configured M3U playlists on schedule and refreshes the channel table."
     },
     {
       "type": "scheduled_task.v1",
       "id": "refresh_xmltv_sources",
       "display_name": "Refresh XMLTV sources",
-      "cron": "0 */3 * * *"
+      "cron": "0 */3 * * *",
+      "description": "Re-downloads configured XMLTV EPG feeds on schedule and refreshes program data."
     },
     {
       "type": "scheduled_task.v1",
       "id": "reap_idle_sessions",
       "display_name": "Reap idle stream sessions",
-      "cron": "* * * * *"
+      "cron": "* * * * *",
+      "description": "Closes live-TV stream sessions whose clients have stopped pulling segments."
     }
   ],
   "http_routes": [
