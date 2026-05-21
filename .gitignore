@@ -1,4 +1,5 @@
 /continuum-plugin-livetv
+/continuum-plugin-livetv.sha256
 *.test
 *.out
 .envrc
