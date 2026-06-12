@@ -16,6 +16,8 @@ import (
 	"fmt"
 	"os"
 	goruntime "runtime"
+	"strconv"
+	"time"
 
 	"github.com/hashicorp/go-hclog"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -96,11 +98,24 @@ func main() {
 	streamClient := httpclient.Streaming()
 	refreshClient := httpclient.ShortLived()
 
+	// Host-protection limits: a short playlist cache plus global concurrency
+	// ceilings and a per-user request rate limit. All are operator-tunable via
+	// PLUGIN_CONFIG_* env vars and default to safe, generous values so the
+	// guards are on by default without surprising existing deployments.
+	limits := streamproxy.Limits{
+		PlaylistCacheTTL:  envDuration("PLUGIN_CONFIG_PLAYLIST_CACHE_TTL", 2*time.Second),
+		GlobalStreamCap:   envInt("PLUGIN_CONFIG_GLOBAL_STREAM_CAP", 500),
+		GlobalUpstreamCap: envInt("PLUGIN_CONFIG_GLOBAL_UPSTREAM_CAP", 500),
+		PerUserRatePerSec: envFloat("PLUGIN_CONFIG_PER_USER_RATE_PER_SEC", 10),
+		PerUserBurst:      envFloat("PLUGIN_CONFIG_PER_USER_BURST", 20),
+	}
+
 	streamDeps := &streamproxy.Deps{
 		Store:    st,
 		Settings: snap,
 		Logger:   logger.Named("streamproxy"),
 		HTTP:     streamClient,
+		Limits:   limits,
 	}
 
 	// Build the live workers up-front so the admin handler and the scheduler
@@ -113,13 +128,15 @@ func main() {
 	// URL map. All routes (user API, admin API, stream-proxy bytes) are
 	// mounted here; the httproutes capability bridge wraps it.
 	srv := &server.Server{
-		Store:       st,
-		Stream:      streamDeps,
-		Settings:    snap,
-		Logger:      logger.Named("api"),
-		M3UWorker:   m3uWorker,
-		XMLTVWorker: xmltvWorker,
-		Snapshot:    snap,
+		Store:         st,
+		Stream:        streamDeps,
+		Settings:      snap,
+		Logger:        logger.Named("api"),
+		M3UWorker:     m3uWorker,
+		XMLTVWorker:   xmltvWorker,
+		Snapshot:      snap,
+		GuideCacheTTL: envDuration("PLUGIN_CONFIG_GUIDE_CACHE_TTL", 5*time.Second),
+		AuditLogger:   logger.Named("audit"),
 	}
 
 	httpSrv := httproutes.NewServer()
@@ -147,6 +164,48 @@ func main() {
 			ScheduledTask: sched,
 		},
 	})
+}
+
+// envDuration reads a Go-duration env var, falling back to def when unset or
+// unparseable. A blank value is treated as unset (use the default).
+func envDuration(key string, def time.Duration) time.Duration {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
+	}
+	d, err := time.ParseDuration(v)
+	if err != nil {
+		return def
+	}
+	return d
+}
+
+// envInt reads an integer env var, falling back to def when unset or
+// unparseable.
+func envInt(key string, def int) int {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil {
+		return def
+	}
+	return n
+}
+
+// envFloat reads a float env var, falling back to def when unset or
+// unparseable.
+func envFloat(key string, def float64) float64 {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
+	}
+	f, err := strconv.ParseFloat(v, 64)
+	if err != nil {
+		return def
+	}
+	return f
 }
 
 // loadManifest parses the embedded manifest.json and replaces the
