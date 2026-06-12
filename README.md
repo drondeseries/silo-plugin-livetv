@@ -19,7 +19,7 @@ Lives under **Video / LiveTV** in the admin sidebar. The plugin registers an HTT
 
 Standalone. The plugin does not subscribe to other Silo plugins; it only needs the Silo host for its user-id header, scheduler, and routing surface. Optional companions in the catalog: [`silo-plugin-notifications`](https://github.com/RXWatcher/silo-plugin-notifications) (could surface refresh failures or session events) and [`silo-plugin-stream-dashboard`](https://github.com/RXWatcher/silo-plugin-stream-dashboard) (could monitor active livetv sessions).
 
-Host: [`ContinuumApp/silo`](https://github.com/ContinuumApp/silo). SDK: [`ContinuumApp/continuum-plugin-sdk`](https://github.com/ContinuumApp/continuum-plugin-sdk).
+Host: [`Silo-Server/silo-server`](https://github.com/Silo-Server/silo-server). SDK: [`Silo-Server/silo-plugin-sdk`](https://github.com/Silo-Server/silo-plugin-sdk).
 
 ## External services
 

@@ -41,9 +41,28 @@
   ],
   "http_routes": [
     {
+      "id": "healthz",
+      "method": "GET",
+      "path": "/healthz",
+      "access": "public"
+    },
+    {
+      "id": "stream_bytes",
+      "method": "GET",
+      "path": "/api/v1/livetv/stream/*",
+      "access": "public"
+    },
+    {
+      "id": "admin_api",
+      "method": "*",
+      "path": "/api/v1/livetv/admin/*",
+      "access": "admin"
+    },
+    {
       "id": "api",
-      "display_name": "Live TV API",
-      "description": "User and admin API, stream proxy, embedded SPA."
+      "method": "*",
+      "path": "/api/v1/livetv/*",
+      "access": "authenticated"
     }
   ],
   "global_config_schema": [
