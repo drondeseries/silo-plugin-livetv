@@ -56,14 +56,21 @@
       "id": "admin_api",
       "method": "*",
       "path": "/api/v1/livetv/admin/*",
-      "access": "admin"
+      "access": "admin",
+      "navigable": true,
+      "navigation_kind": "admin",
+      "navigation_label": "Live TV"
     },
     {
       "id": "api",
       "method": "*",
       "path": "/api/v1/livetv/*",
-      "access": "authenticated"
+      "access": "authenticated",
+      "navigable": true,
+      "navigation_kind": "user",
+      "navigation_label": "Live TV"
     }
+
   ],
   "global_config_schema": []
 }

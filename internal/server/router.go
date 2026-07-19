@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+
+	"github.com/RXWatcher/silo-plugin-livetv/web"
 )
 
 // Routes returns the fully composed http.Handler for the plugin. The shape:
@@ -74,7 +76,11 @@ func (s *Server) Routes() http.Handler {
 			s.mountAdminSessions(adm)
 			s.mountAdminSettings(adm)
 		})
+
+		// Serve static assets and fallback to SPA for any non-API routes.
+		api.Handle("/*", web.SPAHandler())
 	})
+
 
 	return r
 }
