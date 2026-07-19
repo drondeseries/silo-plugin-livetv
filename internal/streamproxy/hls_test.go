@@ -15,11 +15,17 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/hashicorp/go-hclog"
 
+	"github.com/RXWatcher/silo-plugin-livetv/internal/httpclient"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/refresh"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/store"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/streamproxy"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/testutil"
 )
+
+func init() {
+	httpclient.AllowLoopback = true
+}
+
 
 // readFixture loads a file from testdata/. Fails the test on read error so
 // individual cases don't have to plumb errors.

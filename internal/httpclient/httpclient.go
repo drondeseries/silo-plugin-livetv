@@ -51,6 +51,10 @@ func (e *ErrBlockedAddress) Error() string {
 	return fmt.Sprintf("httpclient: blocked connection to non-public address %s (host %q)", e.IP, e.Host)
 }
 
+// AllowLoopback allows connections to loopback addresses (127.0.0.1 / ::1)
+// when set to true. This is intended for use in unit tests.
+var AllowLoopback bool
+
 // guardedControl is a net.Dialer Control hook. It runs after DNS resolution,
 // immediately before the socket connects, with the concrete address the kernel
 // is about to dial. Rejecting here defeats DNS rebinding because the IP checked
@@ -64,11 +68,15 @@ func guardedControl(network, address string, _ syscall.RawConn) error {
 	if ip == nil {
 		return &ErrBlockedAddress{Host: address, IP: host}
 	}
+	if ip.IsLoopback() && AllowLoopback {
+		return nil
+	}
 	if !isPublicIP(ip) {
 		return &ErrBlockedAddress{Host: address, IP: ip.String()}
 	}
 	return nil
 }
+
 
 // isPublicIP reports whether ip is safe to dial: a routable, public unicast
 // address. Everything internal (loopback, RFC1918, CGNAT, link-local, ULA,

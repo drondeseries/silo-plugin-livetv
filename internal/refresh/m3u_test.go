@@ -11,10 +11,16 @@ import (
 
 	"github.com/hashicorp/go-hclog"
 
+	"github.com/RXWatcher/silo-plugin-livetv/internal/httpclient"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/refresh"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/store"
 	"github.com/RXWatcher/silo-plugin-livetv/internal/testutil"
 )
+
+func init() {
+	httpclient.AllowLoopback = true
+}
+
 
 // seedM3USource creates a parent m3u_sources row pointing at url. We surface
 // the helper here (separate from the store-package version) because tests in
