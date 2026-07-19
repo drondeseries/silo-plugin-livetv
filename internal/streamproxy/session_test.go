@@ -122,8 +122,8 @@ func TestCreateSession_HappyPath(t *testing.T) {
 		t.Error("session_id empty")
 	}
 	wantURL := "/api/v1/livetv/stream/" + body.SessionID + ".ts"
-	if body.PlaybackURL != wantURL {
-		t.Errorf("playback_url = %q, want %q", body.PlaybackURL, wantURL)
+	if !strings.HasPrefix(body.PlaybackURL, wantURL+"?token=") {
+		t.Errorf("playback_url = %q, want prefix %q", body.PlaybackURL, wantURL+"?token=")
 	}
 	if time.Until(body.ExpiresAt) < 7*time.Hour {
 		t.Errorf("expires_at too soon: %v", body.ExpiresAt)
@@ -332,7 +332,7 @@ func TestCreateSession_ProbeDetectsHLS(t *testing.T) {
 	if err := json.Unmarshal(rr.Body.Bytes(), &body); err != nil {
 		t.Fatalf("decode: %v", err)
 	}
-	if !strings.HasSuffix(body.PlaybackURL, ".m3u8") {
-		t.Errorf("playback_url = %q, want suffix .m3u8", body.PlaybackURL)
+	if !strings.Contains(body.PlaybackURL, ".m3u8?token=") {
+		t.Errorf("playback_url = %q, want contains .m3u8?token=", body.PlaybackURL)
 	}
 }

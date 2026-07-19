@@ -177,9 +177,9 @@ func (d *Deps) CreateSession(w http.ResponseWriter, r *http.Request) {
 
 	var playbackURL string
 	if kind == "hls" {
-		playbackURL = d.basePath() + "/stream/" + sessID + ".m3u8"
+		playbackURL = fmt.Sprintf("%s/stream/%s.m3u8?token=%s", d.basePath(), sessID, value)
 	} else {
-		playbackURL = d.basePath() + "/stream/" + sessID + ".ts"
+		playbackURL = fmt.Sprintf("%s/stream/%s.ts?token=%s", d.basePath(), sessID, value)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

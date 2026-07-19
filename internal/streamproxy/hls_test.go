@@ -92,7 +92,7 @@ func TestRewritePlaylist_Media(t *testing.T) {
 	body := readFixture(t, "media.m3u8")
 	secret := []byte("00112233445566778899aabbccddeeff")
 	base, _ := url.Parse("http://upstream-base/")
-	out, err := streamproxy.RewritePlaylist(bytes.NewReader(body), base, "SESS123", secret, "/api/v1/livetv", time.Minute)
+	out, err := streamproxy.RewritePlaylist(bytes.NewReader(body), base, "SESS123", secret, "/api/v1/livetv", time.Minute, "SESS_VAL")
 	if err != nil {
 		t.Fatalf("rewrite: %v", err)
 	}
@@ -123,8 +123,14 @@ func TestRewritePlaylist_Media(t *testing.T) {
 		t.Fatalf("rewritten segments = %d, want 2 (lines=%v)", len(rewritten), lines)
 	}
 	for i, line := range rewritten {
-		q := line[strings.Index(line, "?u=")+3:]
-		tok, err := url.QueryUnescape(q)
+		if !strings.Contains(line, "&token=SESS_VAL") {
+			t.Errorf("rewritten line missing token param: %q", line)
+		}
+		uParam := line[strings.Index(line, "?u=")+3:]
+		if idx := strings.Index(uParam, "&"); idx != -1 {
+			uParam = uParam[:idx]
+		}
+		tok, err := url.QueryUnescape(uParam)
 		if err != nil {
 			t.Fatalf("unescape: %v", err)
 		}
@@ -143,7 +149,7 @@ func TestRewritePlaylist_Master(t *testing.T) {
 	body := readFixture(t, "master.m3u8")
 	secret := []byte("00112233445566778899aabbccddeeff")
 	base, _ := url.Parse("http://upstream-base/master.m3u8")
-	out, err := streamproxy.RewritePlaylist(bytes.NewReader(body), base, "S", secret, "/api/v1/livetv", time.Minute)
+	out, err := streamproxy.RewritePlaylist(bytes.NewReader(body), base, "S", secret, "/api/v1/livetv", time.Minute, "SESS_VAL")
 	if err != nil {
 		t.Fatalf("rewrite: %v", err)
 	}
@@ -157,8 +163,11 @@ func TestRewritePlaylist_Master(t *testing.T) {
 		t.Fatalf("rewritten variants = %d, want 2", len(rewritten))
 	}
 	for i, line := range rewritten {
-		q := line[strings.Index(line, "?u=")+3:]
-		tok, _ := url.QueryUnescape(q)
+		uParam := line[strings.Index(line, "?u=")+3:]
+		if idx := strings.Index(uParam, "&"); idx != -1 {
+			uParam = uParam[:idx]
+		}
+		tok, _ := url.QueryUnescape(uParam)
 		got, err := streamproxy.VerifySegment(secret, tok)
 		if err != nil {
 			t.Fatalf("verify: %v", err)

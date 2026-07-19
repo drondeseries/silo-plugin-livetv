@@ -77,7 +77,7 @@ func VerifySegment(secret []byte, token string) (string, error) {
 // Relative URIs in the upstream playlist are resolved against baseUpstream so
 // the signed token always carries an absolute URL the segment handler can use
 // without further context.
-func RewritePlaylist(body io.Reader, baseUpstream *url.URL, sessionID string, secret []byte, basePath string, ttl time.Duration) ([]byte, error) {
+func RewritePlaylist(body io.Reader, baseUpstream *url.URL, sessionID string, secret []byte, basePath string, ttl time.Duration, sessionToken string) ([]byte, error) {
 	basePath = strings.TrimRight(basePath, "/")
 	if basePath == "" {
 		basePath = defaultBasePath
@@ -103,7 +103,7 @@ func RewritePlaylist(body io.Reader, baseUpstream *url.URL, sessionID string, se
 			}
 		}
 		token := SignSegment(secret, abs, exp)
-		fmt.Fprintf(&out, "%s/stream/%s/segment?u=%s\n", basePath, sessionID, url.QueryEscape(token))
+		fmt.Fprintf(&out, "%s/stream/%s/segment?u=%s&token=%s\n", basePath, sessionID, url.QueryEscape(token), sessionToken)
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("scan playlist: %w", err)
@@ -154,7 +154,8 @@ func (d *Deps) ProxyHLSPlaylist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rewritten, err := RewritePlaylist(bytes.NewReader(rawBody), upstreamURL, sessID, sess.SessionSecret, d.basePath(), 5*time.Minute)
+	tokenVal := tokenValue(sessID, sess.SessionSecret)
+	rewritten, err := RewritePlaylist(bytes.NewReader(rawBody), upstreamURL, sessID, sess.SessionSecret, d.basePath(), 5*time.Minute, tokenVal)
 	if err != nil {
 		d.logger().Warn("rewrite playlist failed", "err", err)
 		http.Error(w, "rewrite failed", http.StatusBadGateway)

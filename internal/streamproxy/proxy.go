@@ -263,8 +263,8 @@ func splitToken(value string) (string, []byte, error) {
 	return parts[0], secret, nil
 }
 
-// extractToken pulls the token value either from the dedicated cookie or
-// from an Authorization: Bearer header. Cookie wins when both are present.
+// extractToken pulls the token value either from the dedicated cookie,
+// from an Authorization: Bearer header, or from a query parameter.
 func extractToken(r *http.Request) (string, bool) {
 	if c, err := r.Cookie(cookieName); err == nil && c.Value != "" {
 		return c.Value, true
@@ -274,6 +274,9 @@ func extractToken(r *http.Request) (string, bool) {
 		if v != "" {
 			return v, true
 		}
+	}
+	if q := r.URL.Query().Get("token"); q != "" {
+		return q, true
 	}
 	return "", false
 }
