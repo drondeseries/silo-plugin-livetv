@@ -38,6 +38,10 @@ func (s *Server) Routes() http.Handler {
 	})
 
 	base := s.basePath()
+	r.Get(base, func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, r.URL.Path+"/", http.StatusMovedPermanently)
+	})
+
 	r.Route(base, func(api chi.Router) {
 		// User-scoped API (RequireSession reflects X-Silo-User-Id).
 		api.Group(func(u chi.Router) {
