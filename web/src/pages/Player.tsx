@@ -4,6 +4,8 @@ import { api } from '@/api/client';
 import { HlsPlayer } from '@/player/HlsPlayer';
 import { MpegtsPlayer } from '@/player/MpegtsPlayer';
 import { NowNextPanel } from '@/player/NowNextPanel';
+import { mountPath } from '@/lib/mountPath';
+
 
 // PlayerPage is the watch surface. Two parallel queries run on mount:
 //   - api.startStream() POSTs to mint a stream session; the response carries
@@ -53,7 +55,11 @@ export function PlayerPage() {
   }
   if (!channelQuery.data) return null;
 
-  const url = streamQuery.data.playback_url;
+  let url = streamQuery.data.playback_url;
+  const prefix = mountPath();
+  if (prefix && url.startsWith('/') && !url.startsWith(prefix)) {
+    url = `${prefix}${url}`;
+  }
   // Split a query-string off the path so an .m3u8?token=foo URL still
   // matches the suffix check.
   const path = url.split('?')[0] ?? url;
