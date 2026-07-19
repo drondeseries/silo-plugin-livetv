@@ -115,7 +115,7 @@ func TestRewritePlaylist_Media(t *testing.T) {
 	// absolute upstream URLs.
 	var rewritten []string
 	for _, line := range lines {
-		if strings.HasPrefix(line, "/api/v1/livetv/stream/SESS123/segment?u=") {
+		if strings.HasPrefix(line, "SESS123/segment?u=") {
 			rewritten = append(rewritten, line)
 		}
 	}
@@ -155,7 +155,7 @@ func TestRewritePlaylist_Master(t *testing.T) {
 	}
 	var rewritten []string
 	for _, line := range strings.Split(strings.TrimRight(string(out), "\n"), "\n") {
-		if strings.HasPrefix(line, "/api/v1/livetv/stream/S/segment?u=") {
+		if strings.HasPrefix(line, "S/segment?u=") {
 			rewritten = append(rewritten, line)
 		}
 	}
@@ -371,7 +371,7 @@ func TestProxyHLSPlaylist_HappyPath(t *testing.T) {
 		t.Errorf("ct = %q", got)
 	}
 	body := rr.Body.String()
-	if !strings.Contains(body, "/api/v1/livetv/stream/"+sessID+"/segment?u=") {
+	if !strings.Contains(body, sessID+"/segment?u=") {
 		t.Errorf("rewritten body missing segment URLs:\n%s", body)
 	}
 }

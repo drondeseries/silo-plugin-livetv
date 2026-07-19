@@ -103,7 +103,7 @@ func RewritePlaylist(body io.Reader, baseUpstream *url.URL, sessionID string, se
 			}
 		}
 		token := SignSegment(secret, abs, exp)
-		fmt.Fprintf(&out, "%s/stream/%s/segment?u=%s&token=%s\n", basePath, sessionID, url.QueryEscape(token), sessionToken)
+		fmt.Fprintf(&out, "%s/segment?u=%s&token=%s\n", sessionID, url.QueryEscape(token), sessionToken)
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("scan playlist: %w", err)
