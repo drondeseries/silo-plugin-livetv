@@ -60,3 +60,10 @@ GRANT CONNECT ON DATABASE silo TO plugin_livetv;
 ## Build and release
 
 CI builds linux-amd64 binaries on push to main via the reusable workflow in [RXWatcher/silo-plugin-repository](https://github.com/RXWatcher/silo-plugin-repository) and publishes them to the catalog at [`./binaries/`](https://github.com/RXWatcher/silo-plugin-repository/tree/main/binaries).
+
+For Silo's **Upload Plugin** action, download the release asset named
+`silo-plugin-livetv-linux-amd64.zip`. Do not use GitHub's automatic **Source
+code (zip)** archive or a URL ending in `/archive/refs/tags/<tag>.zip`; that is
+source code under a nested directory, not an installable plugin. A valid Silo
+archive contains only `manifest.json` and the compiled `plugin` executable at
+its root.

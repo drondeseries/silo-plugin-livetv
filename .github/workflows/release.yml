@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   release:
     uses: RXWatcher/silo-plugin-repository/.github/workflows/build-plugin.yml@main
@@ -12,3 +15,69 @@ jobs:
       CATALOG_SSH_KEY: ${{ secrets.CATALOG_SSH_KEY }}
     with:
       plugin_name: silo-plugin-livetv
+
+  install-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Test and build
+        run: |
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web run test --run
+          pnpm --dir web run build
+          go test ./...
+          go vet ./...
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+            go build -trimpath -ldflags="-s -w" -o plugin ./cmd/silo-plugin-livetv
+
+      - name: Package Silo install archive
+        id: package
+        shell: bash
+        run: |
+          version="$(jq -r '.version' cmd/silo-plugin-livetv/manifest.json)"
+          checksum="$(sha256sum plugin | awk '{print $1}')"
+          jq --arg checksum "$checksum" '.checksum = $checksum' \
+            cmd/silo-plugin-livetv/manifest.json > manifest.json
+          python3 - <<'PY'
+          import zipfile
+
+          with zipfile.ZipFile(
+              "silo-plugin-livetv-linux-amd64.zip", "w", zipfile.ZIP_DEFLATED
+          ) as archive:
+              archive.write("manifest.json", "manifest.json")
+              archive.write("plugin", "plugin")
+          PY
+          unzip -Z1 silo-plugin-livetv-linux-amd64.zip | diff -u \
+            <(printf 'manifest.json\nplugin\n') -
+          test "$(unzip -p silo-plugin-livetv-linux-amd64.zip plugin | sha256sum | awk '{print $1}')" = "$checksum"
+          test "$(unzip -p silo-plugin-livetv-linux-amd64.zip manifest.json | jq -r '.checksum')" = "$checksum"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Publish install archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.package.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" silo-plugin-livetv-linux-amd64.zip --clobber
+          else
+            gh release create "$TAG" silo-plugin-livetv-linux-amd64.zip \
+              --title "Live TV $TAG" \
+              --generate-notes
+          fi
