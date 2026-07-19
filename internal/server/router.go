@@ -75,12 +75,12 @@ func (s *Server) Routes() http.Handler {
 			s.mountAdminChannels(adm)
 			s.mountAdminSessions(adm)
 			s.mountAdminSettings(adm)
-			adm.Handle("/*", web.SPAHandler())
+			adm.Handle("/*", http.StripPrefix(base+"/admin", web.SPAHandler()))
 		})
 
 
 		// Serve static assets and fallback to SPA for any non-API routes.
-		api.Handle("/*", web.SPAHandler())
+		api.Handle("/*", http.StripPrefix(base, web.SPAHandler()))
 	})
 
 
