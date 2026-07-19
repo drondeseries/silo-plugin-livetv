@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"syscall"
 	"time"
 )
@@ -69,6 +70,9 @@ func guardedControl(network, address string, _ syscall.RawConn) error {
 		return &ErrBlockedAddress{Host: address, IP: host}
 	}
 	if ip.IsLoopback() && AllowLoopback {
+		return nil
+	}
+	if os.Getenv("ALLOW_PRIVATE_IPS") == "true" || os.Getenv("PLUGIN_CONFIG_ALLOW_PRIVATE_IPS") == "true" {
 		return nil
 	}
 	if !isPublicIP(ip) {
