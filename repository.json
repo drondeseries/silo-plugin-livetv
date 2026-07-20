@@ -4,7 +4,7 @@
       "manifest": {
         "plugin_id": "silo.livetv",
         "version": "0.1.11",
-        "checksum": "19090a7fc19a48fc0c0157c7f17f757baf57164bb2d6faeee8593610243b303d",
+        "checksum": "860044d73c99121a97d6f4666777c0d6807556f27e22e1364a86c7d3476f2e70",
         "silo_api_version": "v1",
         "category": "Video/LiveTV",
         "supported_platforms": [
