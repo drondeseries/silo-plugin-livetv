@@ -1,0 +1,61 @@
+{
+  "plugins": [
+    {
+      "manifest": {
+        "plugin_id": "silo.livetv",
+        "version": "0.1.4",
+        "silo_api_version": "v1",
+        "category": "Video/LiveTV",
+        "supported_platforms": [
+          {
+            "os": "linux",
+            "arch": "amd64"
+          }
+        ],
+        "capabilities": [
+          {
+            "type": "http_routes.v1",
+            "id": "portal",
+            "display_name": "Live TV",
+            "description": "IPTV / M3U live TV portal with XMLTV EPG."
+          },
+          {
+            "type": "scheduled_task.v1",
+            "id": "refresh_m3u_sources",
+            "display_name": "Refresh M3U sources",
+            "cron": "0 */6 * * *",
+            "description": "Re-downloads configured M3U playlists on schedule and refreshes the channel table."
+          },
+          {
+            "type": "scheduled_task.v1",
+            "id": "refresh_xmltv_sources",
+            "display_name": "Refresh XMLTV sources",
+            "cron": "0 */3 * * *",
+            "description": "Re-downloads configured XMLTV EPG feeds on schedule and refreshes program data."
+          },
+          {
+            "type": "scheduled_task.v1",
+            "id": "reap_idle_sessions",
+            "display_name": "Reap idle stream sessions",
+            "cron": "* * * * *",
+            "description": "Closes live-TV stream sessions whose clients have stopped pulling segments."
+          }
+        ],
+        "presentation": {
+          "display_name": "Live TV",
+          "summary": "IPTV / M3U live TV portal with XMLTV EPG.",
+          "description_markdown": "Serves an IPTV / M3U live TV portal with XMLTV EPG.",
+          "homepage_url": "https://github.com/drondeseries/silo-plugin-livetv",
+          "source_url": "https://github.com/drondeseries/silo-plugin-livetv",
+          "support_url": "https://github.com/drondeseries/silo-plugin-livetv/issues",
+          "changelog_url": "https://github.com/drondeseries/silo-plugin-livetv/releases",
+          "publisher_name": "drondeseries",
+          "publisher_url": "https://github.com/drondeseries",
+          "license_spdx": "MIT"
+        }
+      },
+      "repo_url": "https://github.com/drondeseries/silo-plugin-livetv",
+      "archive_url": "https://github.com/drondeseries/silo-plugin-livetv/releases/download/v0.1.4/silo-plugin-livetv-linux-amd64.zip"
+    }
+  ]
+}
