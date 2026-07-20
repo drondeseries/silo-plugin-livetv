@@ -7,15 +7,15 @@
    much divergence we want between LiveTV and the rest of Silo. */
 
 @theme inline {
-  --color-background: #09090b;
-  --color-foreground: #fafafa;
-  --color-surface: #18181b;
-  --color-surface-hover: #27272a;
-  --color-border: #27272a;
-  --color-muted-foreground: #a1a1aa;
-  --color-primary: #fafafa;
-  --color-primary-foreground: #09090b;
-  --color-accent: #f59e0b;
+  --color-background: var(--background, #09090b);
+  --color-foreground: var(--foreground, #fafafa);
+  --color-surface: var(--card, var(--surface, #18181b));
+  --color-surface-hover: var(--accent, var(--surface-hover, #27272a));
+  --color-border: var(--border, #27272a);
+  --color-muted-foreground: var(--muted-foreground, #a1a1aa);
+  --color-primary: var(--primary, #fafafa);
+  --color-primary-foreground: var(--primary-foreground, #09090b);
+  --color-accent: var(--ring, var(--accent, #f59e0b));
 }
 
 html, body {
@@ -25,7 +25,7 @@ html, body {
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-body, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);
 }
 
 * {

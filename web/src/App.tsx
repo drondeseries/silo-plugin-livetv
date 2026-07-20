@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Route, Routes, NavLink, useLocation, type Location } from 'react-router';
 import { Home } from '@/pages/Home';
 import { Channels } from '@/pages/Channels';
@@ -25,6 +25,14 @@ const AdminLayout = lazy(() => import('@/pages/admin/Layout').then((m) => ({ def
 export function App() {
   const location = useLocation() as Location & { state?: { background?: Location } };
   const background = location.state?.background;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const theme = params.get('theme');
+    if (theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }, [location.search]);
 
   return (
     <div className="min-h-screen bg-[color:var(--color-background)] text-[color:var(--color-foreground)]">
