@@ -18,6 +18,12 @@
       "description": "IPTV / M3U live TV portal with XMLTV EPG."
     },
     {
+      "type": "user_navigable_route.v1",
+      "id": "portal_ui",
+      "display_name": "Live TV User Portal",
+      "description": "Exposes the user-navigable route to the web and mobile UI."
+    },
+    {
       "type": "scheduled_task.v1",
       "id": "refresh_m3u_sources",
       "display_name": "Refresh M3U sources",
