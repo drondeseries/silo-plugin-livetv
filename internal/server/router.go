@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 
@@ -38,12 +39,19 @@ func (s *Server) Routes() http.Handler {
 	})
 
 	base := s.basePath()
-	r.Get(base, func(w http.ResponseWriter, r *http.Request) {
-		target := "livetv/"
-		if r.URL.RawQuery != "" {
-			target += "?" + r.URL.RawQuery
-		}
-		http.Redirect(w, r, target, http.StatusMovedPermanently)
+
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			if strings.HasSuffix(req.URL.Path, "/livetv") {
+				target := req.URL.Path + "/"
+				if req.URL.RawQuery != "" {
+					target = target + "?" + req.URL.RawQuery
+				}
+				http.Redirect(w, req, target, http.StatusMovedPermanently)
+				return
+			}
+			next.ServeHTTP(w, req)
+		})
 	})
 
 	r.Route(base, func(api chi.Router) {
