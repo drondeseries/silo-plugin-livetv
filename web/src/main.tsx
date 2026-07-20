@@ -14,7 +14,7 @@ const queryClient = makeQueryClient();
 // We feed react-router the same basename so internal links don't drop the
 // proxy prefix. In dev mode mountPath() returns '' and basename falls back
 // to '/'.
-const basename = mountPath() || '/';
+const basename = mountPath() ? `${mountPath()}/api/v1/livetv` : '/';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
