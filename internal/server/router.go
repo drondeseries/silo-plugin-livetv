@@ -39,7 +39,11 @@ func (s *Server) Routes() http.Handler {
 
 	base := s.basePath()
 	r.Get(base, func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, r.URL.Path+"/", http.StatusMovedPermanently)
+		target := "livetv/"
+		if r.URL.RawQuery != "" {
+			target += "?" + r.URL.RawQuery
+		}
+		http.Redirect(w, r, target, http.StatusMovedPermanently)
 	})
 
 	r.Route(base, func(api chi.Router) {
