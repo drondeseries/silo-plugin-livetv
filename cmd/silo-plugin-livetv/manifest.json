@@ -16,6 +16,7 @@
       "id": "portal",
       "display_name": "Live TV",
       "description": "IPTV / M3U live TV portal with XMLTV EPG."
+    },
     {
       "type": "scheduled_task.v1",
       "id": "refresh_m3u_sources",
