@@ -34,10 +34,6 @@ import (
 // authenticate via the opaque session cookie set by CreateSession.
 func (s *Server) Routes() http.Handler {
 	r := chi.NewRouter()
-	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNoContent)
-	})
-
 	base := s.basePath()
 
 	r.Use(func(next http.Handler) http.Handler {
@@ -53,6 +49,11 @@ func (s *Server) Routes() http.Handler {
 			next.ServeHTTP(w, req)
 		})
 	})
+
+	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	})
+
 
 	r.Route(base, func(api chi.Router) {
 		// User-scoped API (RequireSession reflects X-Silo-User-Id).
