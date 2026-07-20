@@ -3,7 +3,7 @@
     {
       "manifest": {
         "plugin_id": "silo.livetv",
-        "version": "0.1.13",
+        "version": "0.1.14",
         "checksum": "bb87d06ced487a43d61b86fada738a77d658386fa7e83d98ce8abb14ced9a1d8",
         "silo_api_version": "v1",
         "category": "Video/LiveTV",
@@ -21,7 +21,7 @@
             "description": "IPTV / M3U live TV portal with XMLTV EPG."
           },
           {
-            "type": "user_navigable_route.v1",
+            "type": "user_navigable_route",
             "id": "portal_ui",
             "display_name": "Live TV User Portal",
             "description": "Exposes the user-navigable route to the web and mobile UI."
@@ -62,7 +62,7 @@
         }
       },
       "repo_url": "https://github.com/drondeseries/silo-plugin-livetv",
-      "archive_url": "https://github.com/drondeseries/silo-plugin-livetv/releases/download/v0.1.13/silo-plugin-livetv-linux-amd64.zip"
+      "archive_url": "https://github.com/drondeseries/silo-plugin-livetv/releases/download/v0.1.14/silo-plugin-livetv-linux-amd64.zip"
     }
   ]
 }
