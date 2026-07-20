@@ -3,7 +3,7 @@
     {
       "manifest": {
         "plugin_id": "silo.livetv",
-        "version": "0.1.11",
+        "version": "0.1.12",
         "checksum": "860044d73c99121a97d6f4666777c0d6807556f27e22e1364a86c7d3476f2e70",
         "silo_api_version": "v1",
         "category": "Video/LiveTV",
@@ -56,7 +56,7 @@
         }
       },
       "repo_url": "https://github.com/drondeseries/silo-plugin-livetv",
-      "archive_url": "https://github.com/drondeseries/silo-plugin-livetv/releases/download/v0.1.11/silo-plugin-livetv-linux-amd64.zip"
+      "archive_url": "https://github.com/drondeseries/silo-plugin-livetv/releases/download/v0.1.12/silo-plugin-livetv-linux-amd64.zip"
     }
   ]
 }

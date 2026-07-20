@@ -39,7 +39,7 @@ func (s *Server) Routes() http.Handler {
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			if strings.HasSuffix(req.URL.Path, "/livetv") {
-				target := req.URL.Path + "/"
+				target := "livetv/"
 				if req.URL.RawQuery != "" {
 					target = target + "?" + req.URL.RawQuery
 				}
