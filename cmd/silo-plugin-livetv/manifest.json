@@ -1,6 +1,6 @@
 {
   "plugin_id": "silo.livetv",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "checksum": "__CHECKSUM__",
   "silo_api_version": "v1",
   "category": "Video/LiveTV",
@@ -16,13 +16,6 @@
       "id": "portal",
       "display_name": "Live TV",
       "description": "IPTV / M3U live TV portal with XMLTV EPG."
-    },
-    {
-      "type": "user_navigable_route",
-      "id": "portal_ui",
-      "display_name": "Live TV User Portal",
-      "description": "Exposes the user-navigable route to the web and mobile UI."
-    },
     {
       "type": "scheduled_task.v1",
       "id": "refresh_m3u_sources",
